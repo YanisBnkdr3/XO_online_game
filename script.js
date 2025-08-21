@@ -5,6 +5,15 @@ $(document).ready(function () {
   var currentName = "";
   var gameActive = true;
   var gameState = ["", "", "", "", "", "", "", "", ""];
+  // 🎮 Fonction rejouer
+  $(document).on("click", "#replayBtn", function () {
+    gameState.fill("");
+    $(".box").text("").removeClass("winner");
+    gameActive = true;
+    currentPlayer = "X";
+    currentName = player1;
+    $("#statusArea").text("C'est votre tour, " + currentName);
+  });
 
   function initBackgroundColorChange() {
     var colors = ["#f8efd4", "#d4f8ef", "#f8d4d8", "#d8d4f8", "#f7d4f8"];
@@ -51,15 +60,26 @@ $(document).ready(function () {
       let c = gameState[winCondition[2]];
       if (a !== "" && a === b && b === c) {
         gameActive = false;
-        $("#statusArea").text(
-          "Félicitations, " + currentName + ", vous avez gagné!"
+
+        // 🎉 Animation sur les cases gagnantes
+        winCondition.forEach((index) => {
+          $(`.box[data-index='${index}']`).addClass("winner");
+        });
+
+        $("#statusArea").html(
+          `<h2 style="color:#ffdd00; font-size:2rem;">🎉 Félicitations, ${currentName}, vous avez gagné ! 🎉</h2>
+         <button id="replayBtn" class="btn-replay">🔄 Rejouer</button>`
         );
+
         return;
       }
     }
 
     if (!gameState.includes("")) {
-      $("#statusArea").text("Match nul! Voulez-vous rejouer?");
+      $("#statusArea").html(
+        `<h2 style="color:#9d4edd;">🤝 Match nul !</h2>
+       <button id="replayBtn" class="btn-replay">🔄 Rejouer</button>`
+      );
       gameActive = false;
       return;
     }
