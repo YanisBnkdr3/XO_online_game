@@ -65,7 +65,9 @@ h1 {
   font-weight: bold;
   cursor: pointer;
   user-select: none;
-  transition: background 0.3s, transform 0.2s;
+  transition:
+    background 0.3s,
+    transform 0.2s;
 }
 
 .box:hover {
@@ -90,7 +92,9 @@ footer {
 .winner {
   animation: winnerFlash 1s infinite alternate;
   color: #ffdd00 !important;
-  text-shadow: 0px 0px 20px #ffdd00, 0px 0px 40px #ff8800;
+  text-shadow:
+    0px 0px 20px #ffdd00,
+    0px 0px 40px #ff8800;
 }
 
 @keyframes winnerFlash {
@@ -152,4 +156,12 @@ footer {
 .btn-replay:hover {
   background: #7b2cbf;
   transform: scale(1.1);
+}
+#scoreP1,
+#scoreP2 {
+  color: #ffdd00;
+}
+#nameP1,
+#nameP2 {
+  color: #9d4edd;
 }

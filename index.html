@@ -1,36 +1,10 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="google-site-verification" content="google7059959d3276a8f6" />
 
-    <!-- 🎨 Favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png" />
-    <link rel="icon" type="image/png" sizes="48x48" href="favicon.png" />
-    <link rel="apple-touch-icon" href="favicon.png" />
-
-    <meta
-      name="description"
-      content="Jeu de Morpion en ligne développé par Yanis Benkeder, développeur web et JavaScript. Jouez au Tic Tac Toe gratuitement."
-    />
-    <meta name="author" content="Yanis Benkeder" />
-    <meta
-      name="keywords"
-      content="Morpion, Tic Tac Toe, Yanis Benkeder, jeu en ligne, HTML, CSS, JavaScript"
-    />
-    <meta name="robots" content="index, follow" />
-    <meta name="language" content="French" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-
-    <!-- ✅ Nouveau title optimisé -->
     <title>Yanis Benkeder | Jeu de Morpion en ligne</title>
-
-    <!-- ✅ Balise canonical -->
-    <link
-      rel="canonical"
-      href="https://yanisbnkdr3.github.io/XO_online_game/"
-    />
 
     <link rel="stylesheet" href="style.css" />
     <link
@@ -40,16 +14,30 @@
   </head>
   <body>
     <div class="container">
-      <!-- ✅ h1 incluant ton nom pour le SEO -->
       <h1>Jeu de Morpion en ligne par Yanis Benkeder</h1>
 
       <div id="formContainer">
         <input type="text" id="player1" placeholder="Nom du Joueur 1 (X)" />
         <input type="text" id="player2" placeholder="Nom du Joueur 2 (O)" />
-        <button id="startGame" class="btn btn-primary">Jouer</button>
+
+        <select id="gameMode" class="form-control mt-2">
+          <option value="pvp">👥 Joueur vs Joueur</option>
+          <option value="cpu">🤖 Joueur vs Ordinateur</option>
+        </select>
+
+        <button id="startGame" class="btn btn-primary mt-2">🎮 Jouer</button>
       </div>
 
       <div id="gameContainer" class="d-none">
+        <!-- 📊 Score -->
+        <div id="scoreBoard" class="mb-3">
+          <span id="nameP1">Joueur 1</span> (<strong>X</strong>) :
+          <span id="scoreP1">0</span>
+          |
+          <span id="nameP2">Joueur 2</span> (<strong>O</strong>) :
+          <span id="scoreP2">0</span>
+        </div>
+
         <div class="row">
           <div class="col-4 box" data-index="0"></div>
           <div class="col-4 box" data-index="1"></div>
@@ -65,11 +53,11 @@
           <div class="col-4 box" data-index="7"></div>
           <div class="col-4 box" data-index="8"></div>
         </div>
+
         <div id="statusArea" class="mt-3"></div>
       </div>
     </div>
 
-    <!-- Pied de page -->
     <footer class="text-center mt-5 mb-3">
       <p>Jeu développé par Yanis Benkeder</p>
     </footer>

@@ -1,20 +1,18 @@
 $(document).ready(function () {
   var player1 = "";
   var player2 = "";
+  var computerName = "Ordinateur 🤖";
   var currentPlayer = "X";
   var currentName = "";
   var gameActive = true;
   var gameState = ["", "", "", "", "", "", "", "", ""];
-  // 🎮 Fonction rejouer
-  $(document).on("click", "#replayBtn", function () {
-    gameState.fill("");
-    $(".box").text("").removeClass("winner");
-    gameActive = true;
-    currentPlayer = "X";
-    currentName = player1;
-    $("#statusArea").text("C'est votre tour, " + currentName);
-  });
+  var gameMode = "pvp";
 
+  // 📊 Scores
+  var scoreP1 = 0;
+  var scoreP2 = 0;
+
+  // 🎨 Fond animé
   function initBackgroundColorChange() {
     var colors = ["#f8efd4", "#d4f8ef", "#f8d4d8", "#d8d4f8", "#f7d4f8"];
     setInterval(function () {
@@ -25,22 +23,47 @@ $(document).ready(function () {
 
   initBackgroundColorChange();
 
+  // 📊 Mise à jour score
+  function updateScoreBoard() {
+    $("#scoreP1").text(scoreP1);
+    $("#scoreP2").text(scoreP2);
+
+    $("#nameP1").text(player1);
+    $("#nameP2").text(player2);
+  }
+
+  // 🔄 Rejouer
+  $(document).on("click", "#replayBtn", function () {
+    gameState.fill("");
+    $(".box").text("").removeClass("winner");
+    gameActive = true;
+    currentPlayer = "X";
+    currentName = player1;
+    $("#statusArea").text("C'est votre tour, " + currentName);
+  });
+
+  // 🎯 Clique sur une case
   function handleBoxClicked() {
     var boxIndex = $(this).attr("data-index");
 
-    if (gameState[boxIndex] !== "" || !gameActive) {
-      return;
-    }
+    if (gameState[boxIndex] !== "" || !gameActive) return;
 
     gameState[boxIndex] = currentPlayer;
     $(this).text(currentPlayer);
 
     checkForWinner();
+
     if (gameActive) {
       togglePlayer();
+
+      // 🤖 Tour de l'ordinateur
+      if (gameMode === "cpu" && currentPlayer === "O") {
+        setTimeout(computerMove, 500);
+      }
     }
   }
 
+  // 🏆 Vérifie gagnant
   function checkForWinner() {
     const winningConditions = [
       [0, 1, 2],
@@ -54,53 +77,97 @@ $(document).ready(function () {
     ];
 
     for (let i = 0; i < winningConditions.length; i++) {
-      const winCondition = winningConditions[i];
-      let a = gameState[winCondition[0]];
-      let b = gameState[winCondition[1]];
-      let c = gameState[winCondition[2]];
+      const win = winningConditions[i];
+      let a = gameState[win[0]];
+      let b = gameState[win[1]];
+      let c = gameState[win[2]];
+
       if (a !== "" && a === b && b === c) {
         gameActive = false;
 
-        // 🎉 Animation sur les cases gagnantes
-        winCondition.forEach((index) => {
+        // 📊 Incrément score
+        if (currentPlayer === "X") {
+          scoreP1++;
+        } else {
+          scoreP2++;
+        }
+        updateScoreBoard();
+
+        // ✨ Animation gagnante
+        win.forEach((index) => {
           $(`.box[data-index='${index}']`).addClass("winner");
         });
 
-        $("#statusArea").html(
-          `<h2 style="color:#ffdd00; font-size:2rem;">🎉 Félicitations, ${currentName}, vous avez gagné ! 🎉</h2>
-         <button id="replayBtn" class="btn-replay">🔄 Rejouer</button>`
-        );
-
+        $("#statusArea").html(`
+          <h2>🎉 Félicitations ${currentName} !</h2>
+          <button id="replayBtn" class="btn-replay">🔄 Rejouer</button>
+        `);
         return;
       }
     }
 
+    // 🤝 Match nul
     if (!gameState.includes("")) {
-      $("#statusArea").html(
-        `<h2 style="color:#9d4edd;">🤝 Match nul !</h2>
-       <button id="replayBtn" class="btn-replay">🔄 Rejouer</button>`
-      );
       gameActive = false;
-      return;
+      $("#statusArea").html(`
+        <h2>🤝 Match nul !</h2>
+        <button id="replayBtn" class="btn-replay">🔄 Rejouer</button>
+      `);
     }
   }
 
+  // 🔄 Change joueur
   function togglePlayer() {
     currentPlayer = currentPlayer === "X" ? "O" : "X";
     currentName = currentPlayer === "X" ? player1 : player2;
     $("#statusArea").text("C'est votre tour, " + currentName);
   }
 
+  // 🤖 IA simple
+  function computerMove() {
+    if (!gameActive) return;
+
+    var emptyBoxes = [];
+
+    gameState.forEach((val, index) => {
+      if (val === "") emptyBoxes.push(index);
+    });
+
+    if (emptyBoxes.length === 0) return;
+
+    var randomIndex = emptyBoxes[Math.floor(Math.random() * emptyBoxes.length)];
+
+    gameState[randomIndex] = "O";
+    $(`.box[data-index='${randomIndex}']`).text("O");
+
+    checkForWinner();
+
+    if (gameActive) {
+      togglePlayer();
+    }
+  }
+
+  // ▶️ Démarrer le jeu
   $("#startGame").click(function () {
     player1 = $("#player1").val() || "Joueur 1";
-    player2 = $("#player2").val() || "Joueur 2";
+    gameMode = $("#gameMode").val();
+
+    if (gameMode === "cpu") {
+      player2 = computerName;
+    } else {
+      player2 = $("#player2").val() || "Joueur 2";
+    }
+
     currentPlayer = "X";
     currentName = player1;
     gameActive = true;
     gameState.fill("");
-    $(".box").text("");
+    $(".box").text("").removeClass("winner");
+
     $("#gameContainer").removeClass("d-none");
     $("#formContainer").addClass("d-none");
+
+    updateScoreBoard();
     $("#statusArea").text("C'est votre tour, " + currentName);
   });
 
